@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>ArXiv Query: search_query=all:dataset+AND+all:quality</title>
+  <id>http://arxiv.org/api/cHxbiOdZaP56ODnBPIenZhzg5f8</id>
+  <updated>2025-01-15T00:00:00-05:00</updated>
+  <opensearch:totalResults xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">2</opensearch:totalResults>
+  <opensearch:startIndex xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">0</opensearch:startIndex>
+  <opensearch:itemsPerPage xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">2</opensearch:itemsPerPage>
+  <entry>
+    <id>http://arxiv.org/abs/2501.12345v1</id>
+    <updated>2025-01-10T20:00:00Z</updated>
+    <published>2025-01-10T20:00:00Z</published>
+    <title>High-Quality Medical Imaging Dataset for Few-Shot Learning</title>
+    <summary>We present a carefully curated dataset of 500 expert-annotated medical images that achieves state-of-the-art performance with only 10% of the training data compared to existing large-scale datasets. Our strategic selection methodology focuses on quality over quantity, demonstrating that smaller, high-quality datasets can outperform massive collections. The dataset shows strong generalization across multiple medical imaging tasks and could scale effectively with additional expert annotations.</summary>
+    <author>
+      <name>Jane Smith</name>
+    </author>
+    <author>
+      <name>John Doe</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">Published in NeurIPS 2025</arxiv:comment>
+    <link href="http://arxiv.org/abs/2501.12345v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2501.12345v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.67890v1</id>
+    <updated>2025-01-08T15:30:00Z</updated>
+    <published>2025-01-08T15:30:00Z</published>
+    <title>Limited Data for Climate Modeling: A Scarcity Analysis</title>
+    <summary>Climate modeling faces significant data scarcity challenges due to expensive sensor deployments and privacy restrictions. We analyze how synthetic data generation could address these limitations and propose methods for quality assessment of generated climate data.</summary>
+    <author>
+      <name>Alice Johnson</name>
+    </author>
+    <link href="http://arxiv.org/abs/2501.67890v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2501.67890v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+</feed>

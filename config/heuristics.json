@@ -1,0 +1,149 @@
+{
+  "sensitivity": "high",
+  "thresholds": {
+    "value_score_minimum": 6.0,
+    "confidence_minimum": 5.0,
+    "tier_s_threshold": 9.0,
+    "tier_a_threshold": 7.5,
+    "tier_b_threshold": 6.0
+  },
+  "signal_weights": {
+    "demand_signals": 0.20,
+    "scarcity_signals": 0.15,
+    "novelty_signals": 0.10,
+    "quality_signals": 0.15,
+    "data_efficiency": 0.15,
+    "performance_impact": 0.10,
+    "scale_signals": 0.05,
+    "commercial_viability": 0.10,
+    "trend_signals": 0.05
+  },
+  "keywords": {
+    "scarcity": [
+      "lack of",
+      "limited",
+      "scarce",
+      "insufficient",
+      "absence of",
+      "scarcity of",
+      "limited availability",
+      "challenging to obtain"
+    ],
+    "novelty": [
+      "first",
+      "novel",
+      "new",
+      "unprecedented",
+      "introduce",
+      "previously unexplored",
+      "first-of-kind"
+    ],
+    "quality": [
+      "expert-labeled",
+      "high-quality",
+      "curated",
+      "validated",
+      "domain expert",
+      "rigorous quality",
+      "carefully selected",
+      "systematic",
+      "principled",
+      "annotation protocol",
+      "quality control",
+      "rigorous curation",
+      "multi-stage review"
+    ],
+    "data_efficiency": [
+      "data-efficient",
+      "sample-efficient",
+      "few-shot",
+      "data efficiency",
+      "efficient learning",
+      "minimal data",
+      "less data",
+      "fewer examples",
+      "fraction of data",
+      "small sample"
+    ],
+    "performance_impact": [
+      "outperform",
+      "state-of-the-art",
+      "SOTA",
+      "superior performance",
+      "improve",
+      "improvement",
+      "achieve",
+      "benchmark",
+      "best results",
+      "top performance"
+    ],
+    "industry": [
+      "real-world",
+      "production",
+      "deployment",
+      "commercial",
+      "industry",
+      "business impact",
+      "enterprise"
+    ],
+    "synthetic": [
+      "synthesize",
+      "generate",
+      "artificial",
+      "simulate",
+      "procedurally generated",
+      "data augmentation"
+    ],
+    "collection_cost": [
+      "expensive to collect",
+      "requires domain expertise",
+      "time-consuming",
+      "specialized equipment",
+      "rare events"
+    ],
+    "privacy": [
+      "privacy concerns",
+      "HIPAA",
+      "GDPR",
+      "confidentiality",
+      "proprietary data"
+    ],
+    "scale": [
+      "performance scales",
+      "not yet saturated",
+      "data-hungry",
+      "scaling laws",
+      "pre-training"
+    ],
+    "efficiency_signals": [
+      "sample efficiency",
+      "data efficiency",
+      "few-shot learning",
+      "low-resource",
+      "minimal supervision",
+      "fraction of the data",
+      "comparable performance with less data",
+      "outperform.*with fewer"
+    ],
+    "quality_indicators": [
+      "annotation quality",
+      "expert verification",
+      "gold standard",
+      "inter-annotator agreement",
+      "quality assurance",
+      "rigorous validation",
+      "quality over quantity",
+      "carefully annotated"
+    ],
+    "scaling_potential": [
+      "scales to",
+      "generalizes to",
+      "transfer learning",
+      "cross-domain",
+      "domain adaptation",
+      "pre-training improves",
+      "performance improves with scale",
+      "not saturated"
+    ]
+  }
+}

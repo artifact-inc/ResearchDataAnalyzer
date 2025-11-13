@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  analyzer:
+    build:
+      context: ../../..
+      dockerfile: ai_working/research_data_analyzer/docker/Dockerfile
+    volumes:
+      # Output directory for findings
+      - ../findings:/app/findings
+      # Config files (read-only)
+      - ../config:/app/config:ro
+      # Session persistence
+      - ../.sessions:/app/.sessions
+      # Mount .env file
+      - ../.env:/app/.env:ro
+    environment:
+      # Operating mode
+      - MODE=${MODE:-batch}
+      # Monitoring interval in hours (minimum 1)
+      - POLL_INTERVAL_HOURS=${POLL_INTERVAL_HOURS:-24}
+      # Initial lookback period in days
+      - LOOKBACK_DAYS=${LOOKBACK_DAYS:-90}
+      # Output directory
+      - FINDINGS_DIR=/app/findings
+      # Log level
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      # API keys (loaded from .env file)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SEMANTIC_SCHOLAR_API_KEY=${SEMANTIC_SCHOLAR_API_KEY:-}
+    restart: unless-stopped
+    container_name: research_data_analyzer
+
+  # Optional: Run in batch mode once
+  analyzer-batch:
+    build:
+      context: ../../..
+      dockerfile: ai_working/research_data_analyzer/docker/Dockerfile
+    profiles:
+      - batch
+    volumes:
+      - ../findings:/app/findings
+      - ../config:/app/config:ro
+      - ../.sessions:/app/.sessions
+      - ../.env:/app/.env:ro
+    environment:
+      - MODE=batch
+      - LOOKBACK_DAYS=${LOOKBACK_DAYS:-90}
+      - FINDINGS_DIR=/app/findings
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SEMANTIC_SCHOLAR_API_KEY=${SEMANTIC_SCHOLAR_API_KEY:-}
+    container_name: research_data_analyzer_batch

@@ -1,0 +1,14 @@
+{
+  "arxiv": {
+    "enabled": true,
+    "categories": ["cs.AI", "cs.CL", "cs.CV", "cs.LG", "cs.RO", "cs.IR", "cs.HC"],
+    "rate_limit_seconds": 3,
+    "base_url": "http://export.arxiv.org/api/query"
+  },
+  "semantic_scholar": {
+    "enabled": true,
+    "rate_limit_seconds": 1,
+    "base_url": "https://api.semanticscholar.org/graph/v1",
+    "fields": ["title", "abstract", "year", "authors", "citationCount", "url", "externalIds"]
+  }
+}
