@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from research_data_analyzer.analyzers import SignalExtractor, ValueEvaluator
-from research_data_analyzer.config import load_heuristics, load_sources
+from research_data_analyzer.config import load_heuristics, load_quality_config, load_sources
 from research_data_analyzer.monitor import run_batch_analysis, run_continuous_monitor
 from research_data_analyzer.persistence import OutputWriter
 from research_data_analyzer.scrapers import create_scrapers
@@ -87,7 +87,9 @@ async def main() -> None:
     try:
         heuristics = load_heuristics()
         sources = load_sources()
+        quality_config = load_quality_config()
         logger.info("Loaded configurations")
+        logger.info(f"Quality filter: {'enabled' if quality_config.enabled else 'disabled'}")
     except Exception as e:
         logger.error(f"Failed to load configurations: {e}")
         sys.exit(1)
@@ -121,6 +123,7 @@ async def main() -> None:
                 output_writer=output_writer,
                 lookback_days=args.lookback_days,
                 config=heuristics,
+                quality_config=quality_config,
             )
         else:  # monitor mode
             logger.info(f"Starting continuous monitoring (interval: {args.poll_interval_hours}h)")

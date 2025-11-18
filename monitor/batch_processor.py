@@ -2,8 +2,9 @@
 
 import logging
 
-from analyzers import SignalExtractor, ValueEvaluator
-from persistence import OutputWriter
+from research_data_analyzer.analyzers import SignalExtractor, ValueEvaluator
+from research_data_analyzer.analyzers.quality_filter import FilterConfig, filter_papers
+from research_data_analyzer.persistence import OutputWriter
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,7 @@ async def run_batch_analysis(
     output_writer: OutputWriter,
     lookback_days: int,
     config: dict,
+    quality_config: FilterConfig,
 ) -> None:
     """Run one-time batch analysis of recent papers."""
     logger.info(f"Starting batch analysis (lookback: {lookback_days} days)")
@@ -35,12 +37,19 @@ async def run_batch_analysis(
     unique_papers = _deduplicate_papers(all_papers)
     logger.info(f"Total unique papers: {len(unique_papers)}")
 
+    # Apply quality filter
+    logger.info("=" * 60)
+    logger.info("Applying quality filter...")
+    filtered_papers, rejected_papers = filter_papers(unique_papers, quality_config)
+    logger.info(f"Quality filter: {len(filtered_papers)} passed, {len(rejected_papers)} rejected")
+    logger.info("=" * 60)
+
     # Process each paper
     threshold = config.get("thresholds", {}).get("value_score_minimum", 6.0)
     findings_count = 0
 
-    for i, paper in enumerate(unique_papers, 1):
-        logger.info(f"Processing paper {i}/{len(unique_papers)}: {paper.title[:60]}...")
+    for i, paper in enumerate(filtered_papers, 1):
+        logger.info(f"Processing paper {i}/{len(filtered_papers)}: {paper.title[:60]}...")
 
         try:
             # Extract signals

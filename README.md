@@ -2,48 +2,97 @@
 
 A market research tool for identifying dataset creation opportunities by analyzing ML research papers.
 
+**Quick Navigation:**
+- [Get Started](#-quick-start) | [How It Works](#-how-it-works) | [Configuration](#️-configuration) | [Documentation](#-documentation) | [Troubleshooting](#-troubleshooting)
+
 ## 🎯 Purpose
 
 This tool helps you identify valuable dataset types to create by analyzing research papers from multiple sources (arXiv, Semantic Scholar, etc.). It's designed for market research - finding opportunities to CREATE new datasets, not harvesting existing ones.
 
+**What you'll get:**
+- Automatically analyzed ML research papers with commercial dataset opportunities identified
+- Tier-ranked findings (S/A/B/C) based on commercial viability and technical merit
+- Clear business cases with target customers and market gaps
+- Blocker detection (legal, technical, market, economic barriers)
+- Confidence scores based on evidence quality
+- Markdown reports ready to share with stakeholders
+
+**Example finding:**
+```
+🔥 [Tier S] Expert-Annotated Radiology Imaging
+Value Score: 9.2/10 | Confidence: 8.5/10
+
+Market Gap: High-quality expert annotations for medical imaging
+Target Customers: Medical AI startups, hospital AI initiatives
+
+Data Provenance:
+- Dataset Used: 10,000 chest X-rays from 3 major hospitals
+- Collection Method: Expert radiologist annotations with consensus review
+- Replication Feasibility: MEDIUM - Requires hospital partnerships and IRB
+  approval, but medical imaging is a well-established data source with
+  standardized collection protocols
+
+Blockers: None detected
+```
+
 ## 🚀 Quick Start
 
-### 1. Setup
+### 1. Prerequisites
+
+- **Python 3.11+** installed
+- **Anthropic API key** ([get one here](https://console.anthropic.com/))
+- **uv package manager** (recommended) or pip
+- Internet connection
+
+### 2. Setup Environment
 
 ```bash
+# Navigate to the project directory
 cd ai_working/research_data_analyzer
 
 # Copy environment template
 cp .env.example .env
 
-# Edit .env and add your API keys
-nano .env
+# Edit .env and add your API key
+nano .env  # or use your preferred editor
 ```
 
-Required environment variables:
-- `ANTHROPIC_API_KEY` (required) - For AI evaluation
-
-### 2. Install Dependencies
-
-From project root:
+Add to `.env`:
 ```bash
-# Add required packages
+ANTHROPIC_API_KEY=your_key_here
+```
+
+### 3. Install Dependencies
+
+**Using uv (recommended):**
+```bash
+# From the amplifier project root
 uv add anthropic httpx python-dotenv
 ```
 
-### 3. Run Batch Analysis
+**Using pip:**
+```bash
+pip install anthropic httpx python-dotenv
+```
+
+### 4. Run Your First Analysis
 
 ```bash
-# Analyze last 30 days of papers
+# Quick test with last 7 days
+python -m research_data_analyzer.main --mode batch --lookback-days 7
+
+# Or full analysis with last 30 days
 python -m research_data_analyzer.main --mode batch --lookback-days 30
 ```
 
-### 4. Run Continuous Monitoring
+### 5. Set Up Continuous Monitoring (Optional)
 
 ```bash
 # Monitor for new papers daily
 python -m research_data_analyzer.main --mode monitor --poll-interval-hours 24
 ```
+
+**See [docs/QUICK_START.md](docs/QUICK_START.md) for detailed step-by-step instructions.**
 
 ---
 
@@ -55,67 +104,79 @@ The system scrapes papers from multiple sources:
 - **arXiv**: ML/AI preprints (cs.AI, cs.CL, cs.CV, cs.LG, etc.)
 - **Semantic Scholar**: Academic papers with citation data
 
-### 8 Signal Categories
+### Signal Detection System
 
-The analyzer detects **30+ heuristic signals** across 8 categories:
+The analyzer detects **30+ heuristic signals** across 9 categories (plus meta-signals):
 
-1. **Demand Signals** (weight: 25%)
-   - Data scarcity complaints
-   - Synthetic data workarounds
-   - Multi-paper convergence
+1. **Demand Signals** (20%) - Market need indicators
+   - Data scarcity complaints, synthetic data workarounds, multi-paper convergence
 
-2. **Scarcity Signals** (weight: 20%)
-   - Collection cost barriers
-   - Size limitations
-   - Privacy/legal restrictions
+2. **Scarcity Signals** (15%) - Collection barriers
+   - Cost barriers, size limitations, privacy/legal restrictions
 
-3. **Novelty Signals** (weight: 15%)
-   - First-of-kind mentions
-   - Multimodal combinations
-   - Emerging applications
+3. **Novelty Signals** (10%) - Innovation indicators
+   - First-of-kind mentions, multimodal combinations, emerging applications
 
-4. **Quality Signals** (weight: 10%)
-   - Annotation quality emphasis
-   - Expert involvement
+4. **Quality Signals** (15%) - Excellence emphasis
+   - Expert annotation requirements, validation emphasis, curation needs
 
-5. **Scale Signals** (weight: 10%)
-   - Performance scaling
-   - Pre-training opportunities
+5. **Data Efficiency** (15%) - Optimization opportunities
+   - Few-shot learning benefits, sample efficiency gains, transfer learning potential
 
-6. **Commercial Viability** (weight: 15%)
-   - Industry mentions
-   - Regulatory needs
-   - Cross-industry use
+6. **Performance Impact** (10%) - Capability improvements
+   - Accuracy gains from better data, benchmark improvements, capability unlocks
 
-7. **Trend Signals** (weight: 5%)
-   - Publication velocity
-   - Major lab adoption
-   - High citations
+7. **Scale Signals** (5%) - Growth potential
+   - Performance scaling with data size, pre-training opportunities
 
-8. **Meta-Signals**
-   - "Perfect Storm": Demand + Labs + Industry + Scarcity
-   - "Blue Ocean": Novelty + Emerging + No benchmark
-   - "Quality Play": Size limits + Quality emphasis
-   - "Scale Opportunity": Scaling laws + Pre-training gap
+8. **Commercial Viability** (10%) - Market readiness
+   - Industry mentions, regulatory drivers, cross-industry applications
 
-### AI-Powered Evaluation
+9. **Trend Signals** (5%) - Momentum indicators
+   - Publication velocity, major lab adoption, high citations
 
-After extracting signals, Claude evaluates:
-- Commercial value (0-10)
-- Confidence level (0-10)
-- Business context
-- Target customers
-- Market gaps
-- Concerns/risks
+**Meta-Signals** (Pattern combinations):
+- **Perfect Storm**: Demand + Labs + Industry + Scarcity
+- **Blue Ocean**: Novelty + Emerging + No benchmark
+- **Quality Play**: Size limits + Quality emphasis
+- **Scale Opportunity**: Scaling laws + Pre-training gap
+
+See [docs/SIGNAL_CATALOG.md](docs/SIGNAL_CATALOG.md) for complete signal definitions and keyword lists.
+
+### AI-Powered Evaluation (v2.0)
+
+After extracting signals, Claude evaluates with **dual scoring**:
+- **Technical Contribution** (0-10): Research novelty and quality
+- **Commercial Viability** (0-10): Market readiness and accessibility
+- **Weighted Value Score**: (technical × 0.3) + (commercial × 0.7)
+
+Additionally identifies:
+- **Blockers**: Legal, Technical, Market, Economic barriers with severity levels
+- **Uncertainty Sources**: Missing validation, generic claims, confidence penalties
+- **Effective Score**: Value score after blocker caps applied
+
+### Multi-Stage Quality Control
+
+**Quality Filter** (Pre-AI):
+- Age-adjusted citation thresholds (0-1yr: 3, 1-2yr: 10, 2-5yr: 20, 5+yr: 30)
+- Source-aware filtering (arXiv exempted, Semantic Scholar filtered)
+
+**Blocker Detection** (Post-AI):
+- HIGH severity → max score 6.0 (fundamental barriers)
+- MEDIUM severity → max score 7.5 (significant concerns)
+- LOW severity → max score 10.0 (minor issues)
+
+**Confidence Recalibration**:
+- Penalty-based confidence (10.0 - sum of uncertainty penalties)
+- Reflects evidence quality, not AI certainty
 
 ### Tiered Output
 
-Findings are organized by tier:
+Findings are organized by tier (based on **effective score** after blocker caps):
 - **Tier S** (9.0+): Immediate high-value opportunities
 - **Tier A** (7.5-8.9): Strong opportunities
 - **Tier B** (6.0-7.4): Solid opportunities
-- **Tier C** (4.0-5.9): Emerging opportunities
-- **Tier D** (<4.0): Low viability
+- **Tier C** (<6.0): Emerging opportunities or blocked opportunities
 
 ---
 
@@ -450,25 +511,52 @@ python -c "from models.paper import Paper; print('✓ Imports working')"
 
 ---
 
-## 📚 Architecture
+## 📚 Documentation
+
+### For Users
+- **[README.md](README.md)** (this file) - Getting started and usage guide
+- **[docs/QUICK_START.md](docs/QUICK_START.md)** - 5-minute setup guide
+- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Production deployment and operations
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history and migration guides
+
+### For Developers
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design and data flow
+- **[API_REFERENCE.md](API_REFERENCE.md)** - Complete API documentation
+- **[DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)** - Contributing and development setup
+
+### Deep Dives
+- **[docs/SIGNAL_CATALOG.md](docs/SIGNAL_CATALOG.md)** - All 30+ heuristic signals explained
+- **[docs/QUALITY_VALIDATION.md](docs/QUALITY_VALIDATION.md)** - Multi-stage quality control system
+- **[docs/FINDINGS_FORMAT.md](docs/FINDINGS_FORMAT.md)** - Output format specification
+- **[QUALITY_IMPROVEMENT_STRATEGIES.md](QUALITY_IMPROVEMENT_STRATEGIES.md)** - v2.0 quality enhancements
+- **[QUALITY_VALIDATION_REPORT.md](QUALITY_VALIDATION_REPORT.md)** - Validation results
+
+### Architecture Overview
 
 ```
 research_data_analyzer/
-├── models/              # Data structures (Paper, OpportunityAssessment)
+├── models/              # Data structures (Paper, OpportunityAssessment, Blocker)
 ├── config/              # Configuration loaders
-├── scrapers/            # Paper sources (arXiv, S2, etc.)
-├── analyzers/           # Signal extraction + AI evaluation
-├── persistence/         # Output writing
-├── monitor/             # Batch & continuous modes
-└── main.py              # Entry point
+├── scrapers/            # Paper sources (arXiv, Semantic Scholar)
+├── analyzers/           # Signal extraction, AI evaluation, quality control
+│   ├── signal_extractor.py      # 30+ heuristic signals
+│   ├── value_evaluator.py       # Claude AI evaluation with dual scoring
+│   ├── quality_filter.py        # Age-adjusted citation filtering
+│   ├── blocker_detector.py      # Commercialization blocker detection
+│   └── confidence_calculator.py # Uncertainty-based confidence
+├── persistence/         # Output writing (markdown + JSONL)
+├── monitor/             # Batch & continuous processing modes
+├── docs/                # Extended documentation
+└── main.py              # CLI entry point
 ```
 
 **Design Principles:**
 - Modular architecture ("bricks and studs")
-- Code for structure, AI for intelligence
-- Ethical scraping (rate limits, robots.txt)
-- Incremental saves (no data loss)
-- Slack-ready output format
+- Hybrid code/AI (code for structure, AI for intelligence)
+- Multi-stage quality control (filter → signals → AI → blockers → confidence)
+- Ethical scraping (rate limits, robots.txt, public data only)
+- Incremental saves (no data loss on interruption)
+- Tier-based organization (S/A/B/C findings)
 
 ---
 

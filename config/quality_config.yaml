@@ -1,0 +1,83 @@
+# Quality Filter Configuration
+#
+# This configuration supports both recent papers (3-month lookback) and
+# historical papers (1+ year lookback) by using age-adjusted citation thresholds.
+#
+# SOURCE-AWARE FILTERING:
+# The quality filter is source-aware to accommodate different API capabilities:
+#   - arXiv papers: Always accepted regardless of citation data
+#     (arXiv API doesn't provide citation counts - architectural limitation)
+#   - Semantic Scholar papers: Must meet citation thresholds
+#     (Semantic Scholar API provides citation data)
+#
+# Usage:
+#   - For recent papers (3 months): Use default settings - papers <1yr need only 3 citations
+#   - For historical papers (1+ years): Use default settings - older papers need more citations
+#   - For custom thresholds: Override citation_thresholds below
+
+quality_filter:
+  # Enable/disable quality filtering
+  enabled: true
+
+  # Absolute minimum citations (any age)
+  # Papers below this are always rejected regardless of age
+  # Note: Does NOT apply to arXiv papers (they're accepted without citation data)
+  min_citations_absolute: 5
+
+  # Age-adjusted citation thresholds
+  # Format: "age_range_years": minimum_citations
+  #
+  # Default thresholds are designed to work for both recent and historical papers:
+  # - 0-1 years: 3 citations (accommodates recent 3-month papers)
+  # - 1-2 years: 10 citations (emerging validation)
+  # - 2-5 years: 20 citations (established work)
+  # - 5+ years: 30 citations (mature research)
+  citation_thresholds:
+    "0-1": 3
+    "1-2": 10
+    "2-5": 20
+    "5+": 30
+
+  # Minimum author publication count (not implemented in Phase 1)
+  # Future: reject papers from authors with <3 total publications
+  min_author_papers: 3
+
+  # Allow papers with unknown citation counts (for non-arXiv sources)
+  # arXiv papers are always accepted regardless of this setting (API limitation)
+  # Set to true if you want to be permissive with missing data from other sources
+  allow_unknown_citations: false
+
+# Example Configurations for Different Use Cases:
+#
+# RECENT PAPERS MODE (3-month lookback):
+# - Use default settings above
+# - Papers published in last 3 months fall in 0-1yr category
+# - Need only 3 citations to pass (reasonable for recent work)
+#
+# Example: Paper published 2 months ago with 4 citations
+#   - Age: 0.16 years
+#   - Threshold: 3 citations (0-1 year range)
+#   - Status: PASS (4 >= 3)
+#
+# HISTORICAL PAPERS MODE (1+ year lookback):
+# - Use default settings above
+# - Older papers automatically require more citations
+#
+# Example: Paper published 3 years ago with 15 citations
+#   - Age: 3.0 years
+#   - Threshold: 20 citations (2-5 year range)
+#   - Status: FAIL (15 < 20)
+#
+# CONSERVATIVE MODE (stricter filtering):
+# citation_thresholds:
+#   "0-1": 5
+#   "1-2": 15
+#   "2-5": 30
+#   "5+": 50
+#
+# PERMISSIVE MODE (looser filtering for exploration):
+# citation_thresholds:
+#   "0-1": 1
+#   "1-2": 5
+#   "2-5": 10
+#   "5+": 15

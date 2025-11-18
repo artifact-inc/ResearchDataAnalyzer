@@ -26,13 +26,33 @@ class SemanticScholarScraper(BaseScraper):
         """Fetch papers from last N days."""
         logger.info(f"Fetching Semantic Scholar papers (last {days} days)")
 
-        # Semantic Scholar search with date filtering
-        year = datetime.now(UTC).year  # FIX: Use current year, not cutoff year
+        # Calculate which years to search based on lookback period
+        cutoff_date = datetime.now(UTC) - timedelta(days=days)
+        current_year = datetime.now(UTC).year
+        cutoff_year = cutoff_date.year
 
-        papers = await self._search_papers(year, days)
+        # Search both years if lookback spans multiple years
+        years_to_search = [current_year]
+        if cutoff_year != current_year:
+            years_to_search.insert(0, cutoff_year)  # Add earlier year first
+            logger.info(f"Lookback spans multiple years: searching {cutoff_year} and {current_year}")
 
-        logger.info(f"Fetched {len(papers)} papers from Semantic Scholar")
-        return papers
+        # Search all relevant years
+        all_papers = []
+        for year in years_to_search:
+            papers = await self._search_papers(year, days)
+            all_papers.extend(papers)
+
+        # Deduplicate across years
+        seen_ids = set()
+        unique_papers = []
+        for paper in all_papers:
+            if paper.id not in seen_ids:
+                seen_ids.add(paper.id)
+                unique_papers.append(paper)
+
+        logger.info(f"Fetched {len(unique_papers)} papers from Semantic Scholar")
+        return unique_papers
 
     async def fetch_new_since(self, last_check: datetime) -> list[Paper]:
         """Fetch papers since timestamp."""

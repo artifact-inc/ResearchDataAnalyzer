@@ -28,3 +28,9 @@ ignore = ["PLR2004", "PLR0913"]
 [tool.pyright]
 pythonVersion = "3.11"
 typeCheckingMode = "basic"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.407",
+    "ruff>=0.14.5",
+]
