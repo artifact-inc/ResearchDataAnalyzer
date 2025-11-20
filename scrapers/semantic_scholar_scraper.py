@@ -71,14 +71,17 @@ class SemanticScholarScraper(BaseScraper):
         base_url = self.config["base_url"]
         fields = ",".join(self.config["fields"])
 
-        # Search for AI/ML papers
+        # Search for dataset-focused papers
         queries = [
-            "machine learning dataset",
-            "deep learning data",
-            "artificial intelligence training",
-            "neural network benchmark",
+            "machine learning dataset release",
+            "benchmark dataset evaluation",
+            "training data open source",
+            "multimodal dataset collection",
+            "annotated dataset computer vision",
+            "natural language dataset corpus",
         ]
 
+        logger.info(f"Searching Semantic Scholar with {len(queries)} queries")
         all_papers = []
         cutoff_date = datetime.now(UTC) - timedelta(days=days)
 
@@ -122,9 +125,9 @@ class SemanticScholarScraper(BaseScraper):
                 if not item.get("year"):
                     continue
 
-                # Approximate publication date from year
+                # Use start of year instead of mid-year approximation
                 pub_year = item["year"]
-                published_date = datetime(pub_year, 6, 15, tzinfo=UTC)  # Approximate mid-year
+                published_date = datetime(pub_year, 1, 1, tzinfo=UTC)
 
                 if published_date < cutoff_date:
                     continue

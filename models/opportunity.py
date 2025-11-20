@@ -70,6 +70,10 @@ class OpportunityAssessment:
     data_collection_method: str = ""
     replication_feasibility: str = ""
 
+    # Data specification fields (what data to collect and why)
+    data_needed: str = ""  # Exact specification of data format, features, scale
+    scale_impact: str = ""  # Why large-scale collection matters (10K vs 100K vs 1M+)
+
     # Dual scoring fields
     technical_contribution_score: float = 0.0  # 0-10: Research quality/novelty
     commercial_viability_score: float = 0.0  # 0-10: Market readiness
@@ -95,7 +99,9 @@ class OpportunityAssessment:
 
     def calculate_tier(self: "OpportunityAssessment") -> str:
         """Calculate tier based on effective_value_score."""
-        if self.effective_value_score >= 7.5:
+        if self.effective_value_score >= 9.0:
+            return "S"
+        elif self.effective_value_score >= 7.5:
             return "A"
         elif self.effective_value_score >= 6.0:
             return "B"
@@ -126,6 +132,16 @@ class OpportunityAssessment:
 
 **Target Customers**: {self.target_customers or "See business context"}
 **Market Gap**: {self.market_gap or "See business context"}
+
+---
+
+## 📋 Data Specification
+
+**What Data to Collect**:
+{self.data_needed or "Not specified"}
+
+**Why Scale Matters**:
+{self.scale_impact or "Not specified"}
 
 ---
 

@@ -94,7 +94,10 @@ class ValueEvaluator:
                 dataset_description=data.get("dataset_description", ""),
                 data_collection_method=data.get("data_collection_method", ""),
                 replication_feasibility=data.get("replication_feasibility", ""),
-                # NEW FIELDS
+                # Data specification fields
+                data_needed=data.get("data_needed", ""),
+                scale_impact=data.get("scale_impact", ""),
+                # Dual scoring and blocker fields
                 technical_contribution_score=tech_score,
                 commercial_viability_score=commercial_score,
                 blockers=blockers,
@@ -153,6 +156,12 @@ DETECTED SIGNALS:
 ENHANCED QUALITY & SCALING SIGNALS:
 {enhanced_summary}
 
+CRITICAL FOCUS: DATA SPECIFICATION
+For each opportunity, you MUST clearly specify:
+1. WHAT data needs to be collected (exact format, features, characteristics)
+2. WHY large-scale collection matters (what problems unlock with 10K vs 100K vs 1M+ examples)
+3. HOW this data would be used to solve real business problems
+
 TASK:
 Evaluate this paper on TWO INDEPENDENT dimensions:
 
@@ -195,8 +204,21 @@ Return ONLY valid JSON with this exact structure:
     ],
 
     "data_type_name": "<concise name>",
-    "business_context": "<3-4 sentences explaining commercial value with SPECIFIC EVIDENCE>",
-    "market_gap": "<concrete unmet need, not 'lack of datasets'>",
+
+    "data_needed": "<CRITICAL: 3-4 sentences specifying EXACTLY what data needs to be collected. Include: data format \
+(text/image/sensor/etc), required features/attributes, diversity requirements (demographics, scenarios, edge cases), \
+quality criteria, and target scale (10K/100K/1M+ examples). Be concrete: 'conversational dialogue pairs between users \
+and AI showing 50+ different task types' NOT 'dialogue data'.>",
+
+    "scale_impact": "<CRITICAL: 3-4 sentences explaining WHY large-scale collection matters. What problems can be \
+solved with 100K examples that can't be solved with 10K? What new capabilities unlock at 1M+? Connect directly to \
+customer pain points. Example: 'With 10K examples, model handles common queries. With 100K+, model learns rare edge \
+cases and domain-specific jargon, reducing customer support tickets by 40%. At 1M+, model achieves human-level \
+performance on complex multi-turn conversations.'>",
+
+    "business_context": "<3-4 sentences explaining commercial value with SPECIFIC EVIDENCE. Reference the data \
+needed and scale impact.>",
+    "market_gap": "<concrete unmet need this data would address, not 'lack of datasets'>",
     "target_customers": "<NAMED industries/roles, not generic 'researchers'>",
     "concerns": "<risks and limitations>",
 
@@ -219,16 +241,18 @@ DATA PROVENANCE ANALYSIS:
   Always include reasoning (2-3 sentences)
 
 CRITICAL GUIDELINES:
-- Technical score ≠ Commercial score (research novelty ≠ market readiness)
+- data_needed and scale_impact are MANDATORY and must be specific
 - Generic language ("high demand across industries") → FLAG as blocker
-- Missing validation → BLOCKER detection required
+- Vague data descriptions ("more training data") → UNACCEPTABLE
+- Missing scale justification → BLOCKER detection required
+- Technical score ≠ Commercial score (research novelty ≠ market readiness)
 - Be pessimistic on commercial viability without evidence
 
 SCORING CRITERIA:
 - Technical (8-10): Major breakthrough + rigorous validation + reproducible
 - Technical (6-7.9): Solid contribution + reasonable validation
-- Commercial (8-10): Clear buyers + proven demand + viable economics
-- Commercial (6-7.9): Some customers identified + emerging demand
+- Commercial (8-10): Clear buyers + proven demand + viable economics + SPECIFIC data needs
+- Commercial (6-7.9): Some customers identified + emerging demand + concrete use case
 
 Return only the JSON, no other text."""
 

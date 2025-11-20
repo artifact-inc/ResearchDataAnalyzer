@@ -62,6 +62,22 @@ Add to `.env`:
 ANTHROPIC_API_KEY=your_key_here
 ```
 
+**API Keys:**
+
+The analyzer requires at least one API key and works better with optional keys for broader paper coverage:
+
+**Required:**
+- `ANTHROPIC_API_KEY` - For AI-powered paper evaluation ([get key](https://console.anthropic.com/settings/keys))
+
+**Optional (improves paper source coverage):**
+- `PAPERS_WITH_CODE_API_KEY` - Prevents rate limiting and HTML responses ([get key](https://paperswithcode.com/api/v1/docs/))
+- `SEMANTIC_SCHOLAR_API_KEY` - Higher rate limits for Semantic Scholar API ([request key](https://www.semanticscholar.org/product/api))
+
+**OpenAlex Configuration:**
+- Edit `config/sources.json` and update the `openalex.email` field with your email (required by their polite API policy)
+
+See `.env.example` for the complete template with all available options.
+
 ### 3. Install Dependencies
 
 **Using uv (recommended):**
@@ -100,9 +116,33 @@ python -m research_data_analyzer.main --mode monitor --poll-interval-hours 24
 
 ### Data Firehose Approach
 
-The system scrapes papers from multiple sources:
-- **arXiv**: ML/AI preprints (cs.AI, cs.CL, cs.CV, cs.LG, etc.)
-- **Semantic Scholar**: Academic papers with citation data
+The system scrapes papers from **5 complementary sources**:
+
+1. **arXiv** - ML/AI preprints (cs.AI, cs.CL, cs.CV, cs.LG, cs.RO, cs.IR, cs.HC)
+   - Cutting-edge research before peer review
+   - No authentication required
+   - 3-second rate limit
+
+2. **Semantic Scholar** - Academic papers with citation metadata
+   - Comprehensive coverage across venues
+   - Citation counts and influence metrics
+   - 1-second rate limit
+
+3. **OpenAlex** - Free, comprehensive academic database
+   - 98%+ coverage of scholarly papers
+   - Aggregates from multiple sources (Crossref, PubMed, arXiv, repositories)
+   - 100,000 requests/day limit
+   - Citation data and venue information
+
+4. **Papers with Code** - ML-specific papers with datasets/benchmarks
+   - Links papers to code implementations
+   - Dataset and benchmark associations
+   - Ideal for understanding ML research ecosystem
+
+5. **DBLP** - Computer Science bibliography
+   - Venue-focused (NeurIPS, ICLR, ICML, CVPR, ACL, EMNLP)
+   - High-quality CS conference/journal metadata
+   - ⚠️ Often lacks abstracts (papers without abstracts are skipped)
 
 ### Signal Detection System
 
@@ -272,6 +312,20 @@ Edit `config/sources.json`:
   "semantic_scholar": {
     "enabled": true,
     "rate_limit_seconds": 1
+  },
+  "openalex": {
+    "enabled": true,
+    "rate_limit_seconds": 0.1,
+    "email": "your-email@example.com"
+  },
+  "papers_with_code": {
+    "enabled": true,
+    "rate_limit_seconds": 1
+  },
+  "dblp": {
+    "enabled": true,
+    "rate_limit_seconds": 1,
+    "venues": ["NeurIPS", "ICLR", "ICML", "CVPR"]
   }
 }
 ```
@@ -400,20 +454,23 @@ When ready, replace `OutputWriter` with a `SlackNotifier` class.
 
 ### Additional Data Sources
 
-**Papers with Code Integration** (not yet implemented)
+The system currently supports **5 paper sources** (arXiv, Semantic Scholar, OpenAlex, Papers with Code, DBLP). Additional sources can be added following the `BaseScraper` pattern.
 
-Papers with Code could provide valuable dataset and benchmark information. Potential benefits:
-- Dataset popularity metrics
-- Benchmark performance trends
-- Active research areas
+**Potential Future Sources:**
 
-**Implementation considerations:**
-- API rate limits and access requirements
-- Data quality and coverage assessment
-- Integration with existing signal extraction
-- Incremental value vs implementation cost
+**CORE** - Open access repository aggregator
+- Benefits: 200M+ open access research papers
+- Considerations: API rate limits, focus on open access may duplicate OpenAlex coverage
 
-See `config/sources.json` for source configuration pattern. Would follow the same scraper architecture as arXiv and Semantic Scholar implementations.
+**PubMed** - Medical and life sciences literature
+- Benefits: Domain-specific coverage for medical AI opportunities
+- Considerations: Requires medical domain expertise for signal extraction
+
+**CrossRef** - Comprehensive metadata for scholarly works
+- Benefits: 130M+ records, authoritative metadata
+- Considerations: Heavy overlap with OpenAlex (which aggregates from CrossRef)
+
+See `config/sources.json` for source configuration pattern. All scrapers follow the same architecture: inherit from `BaseScraper`, implement 3 required methods, add to `create_scrapers()` in `scrapers/__init__.py`.
 
 ---
 

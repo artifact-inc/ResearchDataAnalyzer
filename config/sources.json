@@ -10,5 +10,37 @@
     "rate_limit_seconds": 1,
     "base_url": "https://api.semanticscholar.org/graph/v1",
     "fields": ["title", "abstract", "year", "authors", "citationCount", "url", "externalIds"]
+  },
+  "papers_with_code": {
+    "enabled": true,
+    "rate_limit_seconds": 1,
+    "base_url": "https://paperswithcode.com/api/v1",
+    "max_results_per_page": 50,
+    "max_pages": 10,
+    "include_datasets": true,
+    "include_benchmarks": true
+  },
+  "dblp": {
+    "enabled": true,
+    "rate_limit_seconds": 1,
+    "base_url": "https://dblp.org/search/publ/api",
+    "venues": ["NeurIPS", "ICLR", "ICML", "CVPR", "ACL", "EMNLP"],
+    "format": "json",
+    "max_hits": 100
+  },
+  "openalex": {
+    "enabled": true,
+    "base_url": "https://api.openalex.org",
+    "email": "research-analyzer@example.com",
+    "rate_limit_seconds": 1,
+    "concepts": [
+      "C41008148",
+      "C154945302",
+      "C119857082"
+    ],
+    "filters": {
+      "is_oa": "true",
+      "has_abstract": "true"
+    }
   }
 }

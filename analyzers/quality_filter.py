@@ -58,7 +58,15 @@ def calculate_paper_age_years(paper: Paper) -> float:
         Age in years (fractional)
     """
     now = datetime.now(UTC)
-    age_days = (now - paper.published_date).days
+
+    # Ensure paper.published_date is timezone-aware for comparison
+    # Some sources (arXiv) return naive dates, others (OpenAlex) return aware dates
+    published_date = paper.published_date
+    if published_date.tzinfo is None:
+        # Naive datetime - assume UTC
+        published_date = published_date.replace(tzinfo=UTC)
+
+    age_days = (now - published_date).days
     return age_days / 365.25
 
 
